@@ -10,6 +10,7 @@ func Run() {
 	config.InitEnv()
 
 	// ? Инициализация DB
-	database.InitDatabase()
+	db := database.InitDatabase()
+	database.Migrate(db)
 
 }

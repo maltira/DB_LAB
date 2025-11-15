@@ -15,6 +15,4 @@ type ShipOwner struct {
 	BirthDate    time.Time `json:"birth_date" gorm:"not null"`
 	Phone        string    `json:"phone" gorm:"not null"`
 	TypeOfPerson string    `json:"type_of_person" gorm:"not null;check:type_of_person IN ('legal', 'private')"`
-
-	// Связи
 }
