@@ -3,11 +3,15 @@ package repository
 import (
 	"DB_LAB/internal/entity"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type ShipOwnerRepository interface {
 	GetAll() ([]entity.ShipOwner, error)
+	GetByID(id uuid.UUID) (*entity.ShipOwner, error)
+
+	Update(shipOwner *entity.ShipOwner) error
 }
 
 type shipOwnerRepository struct {
@@ -25,4 +29,17 @@ func (r *shipOwnerRepository) GetAll() ([]entity.ShipOwner, error) {
 		return nil, err
 	}
 	return shipOwners, nil
+}
+
+func (r *shipOwnerRepository) GetByID(id uuid.UUID) (*entity.ShipOwner, error) {
+	var shipOwner *entity.ShipOwner
+	err := r.db.Where("id = ?", id).First(&shipOwner).Error
+	if err != nil {
+		return &entity.ShipOwner{}, err
+	}
+	return shipOwner, nil
+}
+
+func (r *shipOwnerRepository) Update(shipOwner *entity.ShipOwner) error {
+	return r.db.Save(shipOwner).Error
 }

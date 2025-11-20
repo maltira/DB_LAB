@@ -21,5 +21,5 @@ type Ship struct {
 
 	Type    ShipType    `gorm:"foreignKey:TypeID"`
 	Owner   ShipOwner   `gorm:"foreignKey:OwnerID"`
-	Skipper ShipSkipper `gorm:"foreignKey:OwnerID"`
+	Skipper ShipSkipper `gorm:"foreignKey:SkipperID"`
 }

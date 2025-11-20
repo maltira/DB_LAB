@@ -2,10 +2,14 @@ package http
 
 import (
 	"DB_LAB/internal/dto"
+	"DB_LAB/internal/entity"
 	"DB_LAB/internal/service"
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type OwnerHandler struct {
@@ -23,4 +27,35 @@ func (s *OwnerHandler) GetAll(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, owners)
+}
+
+func (s *OwnerHandler) GetByID(c *gin.Context) {
+	id := c.Param("id")
+	userID := uuid.MustParse(id)
+
+	owner, err := s.sc.GetByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, dto.ErrorResponse{Code: 404, Error: err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, owner)
+}
+
+func (s *OwnerHandler) Update(c *gin.Context) {
+	var req *entity.ShipOwner
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: http.StatusBadRequest, Error: "Некорректные данные в BODY"})
+		return
+	}
+	err := s.sc.UpdateOwner(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, dto.MessageResponse{Message: "Владелец успешно обновлен"})
 }

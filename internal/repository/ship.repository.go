@@ -21,7 +21,7 @@ func NewShipRepository(db *gorm.DB) ShipRepository {
 
 func (r *shipRepository) GetAllShips() ([]entity.Ship, error) {
 	var ships []entity.Ship
-	err := r.db.Find(&ships).Error
+	err := r.db.Preload("Type").Preload("Owner").Preload("Skipper").Find(&ships).Error
 	if err != nil {
 		return nil, err
 	}

@@ -20,7 +20,7 @@ func NewShipOwnershipRepository(db *gorm.DB) ShipOwnershipRepository {
 
 func (r *shipOwnershipRepository) GetAll() ([]entity.ShipOwnership, error) {
 	var shipOwnerships []entity.ShipOwnership
-	err := r.db.Find(&shipOwnerships).Error
+	err := r.db.Preload("Ship").Find(&shipOwnerships).Error
 	if err != nil {
 		return nil, err
 	}

@@ -20,7 +20,7 @@ func NewShipViolationRepository(db *gorm.DB) ShipViolationRepository {
 
 func (r *shipViolationRepository) GetAll() ([]entity.Violation, error) {
 	var shipViolations []entity.Violation
-	err := r.db.Find(&shipViolations).Error
+	err := r.db.Preload("Ship").Preload("Inspector").Find(&shipViolations).Error
 	if err != nil {
 		return nil, err
 	}
