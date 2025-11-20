@@ -59,3 +59,18 @@ func (s *OwnerHandler) Update(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, dto.MessageResponse{Message: "Владелец успешно обновлен"})
 }
+
+func (s *OwnerHandler) Create(c *gin.Context) {
+	var req *dto.OwnerCreateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: http.StatusBadRequest, Error: "Некорректные данные в BODY"})
+		return
+	}
+	err := s.sc.CreateOwner(req)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, dto.MessageResponse{Message: "Владелец успешно добавлен"})
+}

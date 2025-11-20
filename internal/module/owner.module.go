@@ -20,6 +20,7 @@ func InitOwnerModule(db *gorm.DB, r *gin.RouterGroup) {
 		ownerGroup.GET("/:id", h.GetByID, middleware.ValidateUUID())
 		ownerGroup.GET("/all", h.GetAll)
 
+		ownerGroup.POST("", h.Create)
 		ownerGroup.PUT("", h.Update)
 	}
 }

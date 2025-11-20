@@ -11,6 +11,7 @@ type ShipOwnerRepository interface {
 	GetAll() ([]entity.ShipOwner, error)
 	GetByID(id uuid.UUID) (*entity.ShipOwner, error)
 
+	Create(shipOwner *entity.ShipOwner) error
 	Update(shipOwner *entity.ShipOwner) error
 }
 
@@ -42,4 +43,8 @@ func (r *shipOwnerRepository) GetByID(id uuid.UUID) (*entity.ShipOwner, error) {
 
 func (r *shipOwnerRepository) Update(shipOwner *entity.ShipOwner) error {
 	return r.db.Save(shipOwner).Error
+}
+
+func (r *shipOwnerRepository) Create(shipOwner *entity.ShipOwner) error {
+	return r.db.Create(shipOwner).Error
 }
