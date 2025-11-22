@@ -2,6 +2,7 @@ package module
 
 import (
 	"DB_LAB/internal/delivery/http"
+	"DB_LAB/internal/middleware"
 	"DB_LAB/internal/repository"
 	"DB_LAB/internal/service"
 
@@ -16,6 +17,11 @@ func InitInspectorModule(db *gorm.DB, r *gin.RouterGroup) {
 
 	inspectorGroup := r.Group("/inspector")
 	{
+		inspectorGroup.GET("/:id", h.GetByID, middleware.ValidateUUID())
 		inspectorGroup.GET("/all", h.GetAll)
+
+		inspectorGroup.POST("", h.Create)
+		inspectorGroup.PUT("", h.Update)
+		inspectorGroup.DELETE("/:id", h.Delete)
 	}
 }

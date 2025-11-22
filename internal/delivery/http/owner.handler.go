@@ -74,3 +74,18 @@ func (s *OwnerHandler) Create(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, dto.MessageResponse{Message: "Владелец успешно добавлен"})
 }
+
+func (s *OwnerHandler) Delete(c *gin.Context) {
+	id := c.Param("id")
+	ID := uuid.MustParse(id)
+	err := s.sc.DeleteOwner(ID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, dto.ErrorResponse{Code: 404, Error: err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, dto.MessageResponse{Message: "Владелец успешно удалён"})
+}

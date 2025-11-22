@@ -22,5 +22,6 @@ func InitOwnerModule(db *gorm.DB, r *gin.RouterGroup) {
 
 		ownerGroup.POST("", h.Create)
 		ownerGroup.PUT("", h.Update)
+		ownerGroup.DELETE("/:id", h.Delete)
 	}
 }

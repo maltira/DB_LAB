@@ -13,6 +13,7 @@ type ShipOwnerRepository interface {
 
 	Create(shipOwner *entity.ShipOwner) error
 	Update(shipOwner *entity.ShipOwner) error
+	Delete(id uuid.UUID) error
 }
 
 type shipOwnerRepository struct {
@@ -47,4 +48,8 @@ func (r *shipOwnerRepository) Update(shipOwner *entity.ShipOwner) error {
 
 func (r *shipOwnerRepository) Create(shipOwner *entity.ShipOwner) error {
 	return r.db.Create(shipOwner).Error
+}
+
+func (r *shipOwnerRepository) Delete(id uuid.UUID) error {
+	return r.db.Delete(&entity.ShipOwner{}, "id = ?", id).Error
 }

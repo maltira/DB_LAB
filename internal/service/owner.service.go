@@ -15,6 +15,7 @@ type OwnerService interface {
 
 	CreateOwner(shipOwner *dto.OwnerCreateRequest) error
 	UpdateOwner(shipOwner *entity.ShipOwner) error
+	DeleteOwner(id uuid.UUID) error
 }
 
 type ownerService struct {
@@ -49,4 +50,8 @@ func (s *ownerService) CreateOwner(shipOwner *dto.OwnerCreateRequest) error {
 		TypeOfPerson: shipOwner.TypeOfPerson,
 	}
 	return s.repo.Create(o)
+}
+
+func (s *ownerService) DeleteOwner(id uuid.UUID) error {
+	return s.repo.Delete(id)
 }
