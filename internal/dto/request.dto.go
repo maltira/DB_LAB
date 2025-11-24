@@ -1,6 +1,10 @@
 package dto
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type OwnerCreateRequest struct {
 	Name         string    `json:"name"`
@@ -18,4 +22,21 @@ type InspectorCreateRequest struct {
 	Patronymic string `json:"patronymic"`
 	Phone      string `json:"phone"`
 	Post       string `json:"post"`
+}
+
+type ShipCreateRequest struct {
+	TypeID             uuid.UUID `json:"type_id"`
+	OwnerID            uuid.UUID `json:"owner_id"`
+	SkipperID          uuid.UUID `json:"skipper_id"`
+	ShipNumber         string    `json:"ship_number"`
+	RegistrationDate   time.Time `json:"registration_date"`
+	RegistrationStatus string    `json:"registration_status"`
+}
+
+type InspectionCreateRequest struct {
+	InspectorID        uuid.UUID `json:"inspector_id"`
+	ShipID             uuid.UUID `json:"ship_id"`
+	InspectionDate     time.Time `json:"inspection_date"`
+	Result             string    `json:"result"`
+	NextInspectionDate time.Time `json:"next_inspection_date"`
 }

@@ -45,7 +45,7 @@ func (s *ownerService) CreateOwner(shipOwner *dto.OwnerCreateRequest) error {
 		Surname:      shipOwner.Surname,
 		Patronymic:   &shipOwner.Patronymic,
 		Address:      shipOwner.Address,
-		BirthDate:    shipOwner.BirthDate,
+		BirthDate:    shipOwner.BirthDate.Add(3 * time.Hour),
 		Phone:        shipOwner.Phone,
 		TypeOfPerson: shipOwner.TypeOfPerson,
 	}

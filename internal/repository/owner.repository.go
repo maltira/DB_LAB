@@ -37,7 +37,7 @@ func (r *shipOwnerRepository) GetByID(id uuid.UUID) (*entity.ShipOwner, error) {
 	var shipOwner *entity.ShipOwner
 	err := r.db.Where("id = ?", id).First(&shipOwner).Error
 	if err != nil {
-		return &entity.ShipOwner{}, err
+		return nil, err
 	}
 	return shipOwner, nil
 }

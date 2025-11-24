@@ -3,12 +3,18 @@ package repository
 import (
 	"DB_LAB/internal/entity"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type ShipRepository interface {
 	GetAllShips() ([]entity.Ship, error)
 	GetAllTypes() ([]entity.ShipType, error)
+	GetShipByID(id uuid.UUID) (*entity.Ship, error)
+
+	UpdateShip(ship *entity.Ship) error
+	CreateShip(ship *entity.Ship) error
+	DeleteShip(id uuid.UUID) error
 }
 
 type shipRepository struct {
@@ -35,4 +41,25 @@ func (r *shipRepository) GetAllTypes() ([]entity.ShipType, error) {
 		return nil, err
 	}
 	return types, nil
+}
+
+func (r *shipRepository) GetShipByID(id uuid.UUID) (*entity.Ship, error) {
+	var ship *entity.Ship
+	err := r.db.Preload("Type").Preload("Owner").Preload("Skipper").Where("id = ?", id).First(&ship).Error
+	if err != nil {
+		return nil, err
+	}
+	return ship, nil
+}
+
+func (r *shipRepository) UpdateShip(ship *entity.Ship) error {
+	return r.db.Save(ship).Error
+}
+
+func (r *shipRepository) CreateShip(ship *entity.Ship) error {
+	return r.db.Create(ship).Error
+}
+
+func (r *shipRepository) DeleteShip(id uuid.UUID) error {
+	return r.db.Delete(&entity.Ship{}, "id = ?", id).Error
 }
