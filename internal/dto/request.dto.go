@@ -40,3 +40,12 @@ type InspectionCreateRequest struct {
 	Result             string    `json:"result"`
 	NextInspectionDate time.Time `json:"next_inspection_date"`
 }
+
+type ViolationCreateRequest struct {
+	InspectorID   uuid.UUID `json:"inspector_id"`
+	ShipID        uuid.UUID `json:"ship_id"`
+	ViolationDate time.Time `json:"violation_date"`
+	Amount        string    `json:"amount"`
+	Description   string    `json:"description"`
+	Status        string    `json:"status"`
+}

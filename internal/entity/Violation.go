@@ -11,9 +11,9 @@ type Violation struct {
 	ShipID        uuid.UUID `json:"ship_id" gorm:"type:uuid;not null"`
 	InspectorID   uuid.UUID `json:"inspector_id" gorm:"type:uuid;not null"`
 	ViolationDate time.Time `json:"violation_date" gorm:"not null"`
-	Amount        int       `json:"amount" gorm:"not null"`
+	Amount        string    `json:"amount" gorm:"not null"`
 	Description   string    `json:"description" gorm:"not null"`
-	Status        string    `json:"status" gorm:"not null; check: status IN ('Исполнено', 'Не исполонено'); default: 'Не исполонено'"`
+	Status        string    `json:"status" gorm:"not null; check: status IN ('Исполнено', 'Не исполнено'); default: 'Не исполнено'"`
 
 	Ship      Ship      `gorm:"foreignKey:ShipID"`
 	Inspector Inspector `gorm:"foreignKey:InspectorID"`

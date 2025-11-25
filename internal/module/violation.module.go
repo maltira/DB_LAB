@@ -2,6 +2,7 @@ package module
 
 import (
 	"DB_LAB/internal/delivery/http"
+	"DB_LAB/internal/middleware"
 	"DB_LAB/internal/repository"
 	"DB_LAB/internal/service"
 
@@ -16,6 +17,11 @@ func InitViolationModule(db *gorm.DB, r *gin.RouterGroup) {
 
 	violationGroup := r.Group("/violation")
 	{
+		violationGroup.GET("/:id", h.GetByID, middleware.ValidateUUID())
 		violationGroup.GET("/all", h.GetAll)
+
+		violationGroup.POST("", h.Create)
+		violationGroup.PUT("", h.Update)
+		violationGroup.DELETE("/:id", h.Delete, middleware.ValidateUUID())
 	}
 }
