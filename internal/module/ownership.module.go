@@ -2,6 +2,7 @@ package module
 
 import (
 	"DB_LAB/internal/delivery/http"
+	"DB_LAB/internal/middleware"
 	"DB_LAB/internal/repository"
 	"DB_LAB/internal/service"
 
@@ -16,6 +17,11 @@ func InitOwnershipModule(db *gorm.DB, r *gin.RouterGroup) {
 
 	ownershipGroup := r.Group("/ownership")
 	{
+		ownershipGroup.GET("/:id", h.GetByID, middleware.ValidateUUID())
 		ownershipGroup.GET("/all", h.GetAll)
+
+		ownershipGroup.POST("", h.Create)
+		ownershipGroup.PUT("", h.Update)
+		ownershipGroup.DELETE("/:id", h.Delete, middleware.ValidateUUID())
 	}
 }

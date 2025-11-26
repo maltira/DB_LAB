@@ -2,6 +2,7 @@ package module
 
 import (
 	"DB_LAB/internal/delivery/http"
+	"DB_LAB/internal/middleware"
 	"DB_LAB/internal/repository"
 	"DB_LAB/internal/service"
 
@@ -16,6 +17,11 @@ func InitSkipperModule(db *gorm.DB, r *gin.RouterGroup) {
 
 	skipperGroup := r.Group("/skipper")
 	{
+		skipperGroup.GET("/:id", h.GetByID, middleware.ValidateUUID())
 		skipperGroup.GET("/all", h.GetAll)
+
+		skipperGroup.POST("", h.Create)
+		skipperGroup.PUT("", h.Update)
+		skipperGroup.DELETE("/:id", h.Delete, middleware.ValidateUUID())
 	}
 }

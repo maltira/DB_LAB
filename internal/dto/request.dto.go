@@ -49,3 +49,17 @@ type ViolationCreateRequest struct {
 	Description   string    `json:"description"`
 	Status        string    `json:"status"`
 }
+
+type SkipperCreateRequest struct {
+	Name       string `json:"name"`
+	Surname    string `json:"surname"`
+	Patronymic string `json:"patronymic"`
+	IDNumber   string `json:"id_number"`
+}
+
+type OwnershipCreateRequest struct {
+	OldOwner     uuid.UUID `json:"old_owner"`
+	NewOwner     uuid.UUID `json:"new_owner"`
+	TransferDate time.Time `json:"transfer_date"`
+	ShipID       uuid.UUID `json:"ship_id"`
+}
