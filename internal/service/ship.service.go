@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type ShipService interface {
@@ -14,7 +15,7 @@ type ShipService interface {
 	GetAllTypes() ([]entity.ShipType, error)
 	GetShipByID(id uuid.UUID) (*entity.Ship, error)
 
-	UpdateShip(ship *entity.Ship) error
+	UpdateShip(ship *entity.Ship, tx *gorm.DB) error
 	CreateShip(ship *dto.ShipCreateRequest) error
 	DeleteShip(id uuid.UUID) error
 }
@@ -39,9 +40,9 @@ func (s *shipService) GetShipByID(id uuid.UUID) (*entity.Ship, error) {
 	return s.repo.GetShipByID(id)
 }
 
-func (s *shipService) UpdateShip(ship *entity.Ship) error {
+func (s *shipService) UpdateShip(ship *entity.Ship, tx *gorm.DB) error {
 	ship.RegistrationDate = ship.RegistrationDate.Add(3 * time.Hour)
-	return s.repo.UpdateShip(ship)
+	return s.repo.UpdateShip(ship, tx)
 }
 
 func (s *shipService) CreateShip(ship *dto.ShipCreateRequest) error {

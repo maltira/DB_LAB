@@ -12,8 +12,10 @@ import (
 
 func InitOwnershipModule(db *gorm.DB, r *gin.RouterGroup) {
 	repo := repository.NewShipOwnershipRepository(db)
+	shipRepo := repository.NewShipRepository(db)
+	shipSc := service.NewShipService(shipRepo)
 	sc := service.NewOwnershipService(repo)
-	h := http.NewOwnershipHandler(sc)
+	h := http.NewOwnershipHandler(sc, db, shipSc)
 
 	ownershipGroup := r.Group("/ownership")
 	{

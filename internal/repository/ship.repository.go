@@ -12,7 +12,7 @@ type ShipRepository interface {
 	GetAllTypes() ([]entity.ShipType, error)
 	GetShipByID(id uuid.UUID) (*entity.Ship, error)
 
-	UpdateShip(ship *entity.Ship) error
+	UpdateShip(ship *entity.Ship, tx *gorm.DB) error
 	CreateShip(ship *entity.Ship) error
 	DeleteShip(id uuid.UUID) error
 }
@@ -52,7 +52,10 @@ func (r *shipRepository) GetShipByID(id uuid.UUID) (*entity.Ship, error) {
 	return ship, nil
 }
 
-func (r *shipRepository) UpdateShip(ship *entity.Ship) error {
+func (r *shipRepository) UpdateShip(ship *entity.Ship, tx *gorm.DB) error {
+	if tx != nil {
+		return tx.Save(ship).Error
+	}
 	return r.db.Save(ship).Error
 }
 

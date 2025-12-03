@@ -31,6 +31,7 @@ func Run() {
 	module.InitInspectorModule(db, apiGroup)
 	module.InitOwnershipModule(db, apiGroup)
 	module.InitSkipperModule(db, apiGroup)
+	module.InitQueryModule(db, apiGroup)
 
 	// ? Запуск сервера
 	fmt.Printf("Запуск сервера по адресу: http://%s:%s/api/v1\n", config.Env.AppHost, config.Env.AppPort)

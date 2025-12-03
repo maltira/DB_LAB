@@ -61,7 +61,7 @@ func (s *ShipHandler) UpdateShip(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: http.StatusBadRequest, Error: "Некорректные данные в BODY"})
 		return
 	}
-	err := s.sc.UpdateShip(req)
+	err := s.sc.UpdateShip(req, nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
 		return

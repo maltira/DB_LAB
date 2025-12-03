@@ -6,14 +6,15 @@ import (
 	"DB_LAB/internal/repository"
 
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type OwnershipService interface {
 	GetAll() ([]entity.ShipOwnership, error)
 	GetByID(id uuid.UUID) (*entity.ShipOwnership, error)
 
-	UpdateOwnership(sk *entity.ShipOwnership) error
-	CreateOwnership(sk *dto.OwnershipCreateRequest) error
+	UpdateOwnership(sk *entity.ShipOwnership, tx *gorm.DB) error
+	CreateOwnership(sk *dto.OwnershipCreateRequest, tx *gorm.DB) error
 	DeleteOwnership(id uuid.UUID) error
 }
 
@@ -33,18 +34,18 @@ func (s *ownershipService) GetByID(id uuid.UUID) (*entity.ShipOwnership, error) 
 	return s.repo.GetByID(id)
 }
 
-func (s *ownershipService) UpdateOwnership(sk *entity.ShipOwnership) error {
-	return s.repo.Update(sk)
+func (s *ownershipService) UpdateOwnership(sk *entity.ShipOwnership, tx *gorm.DB) error {
+	return s.repo.Update(sk, tx)
 }
 
-func (s *ownershipService) CreateOwnership(sk *dto.OwnershipCreateRequest) error {
+func (s *ownershipService) CreateOwnership(sk *dto.OwnershipCreateRequest, tx *gorm.DB) error {
 	o := &entity.ShipOwnership{
 		OldOwner:     sk.OldOwner,
 		NewOwner:     sk.NewOwner,
 		TransferDate: sk.TransferDate,
 		ShipID:       sk.ShipID,
 	}
-	return s.repo.Create(o)
+	return s.repo.Create(o, tx)
 }
 
 func (s *ownershipService) DeleteOwnership(id uuid.UUID) error {

@@ -6,6 +6,7 @@ import (
 	"DB_LAB/internal/service"
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -13,11 +14,13 @@ import (
 )
 
 type OwnershipHandler struct {
-	sc service.OwnershipService
+	sc     service.OwnershipService
+	shipSc service.ShipService
+	db     *gorm.DB
 }
 
-func NewOwnershipHandler(sc service.OwnershipService) *OwnershipHandler {
-	return &OwnershipHandler{sc}
+func NewOwnershipHandler(sc service.OwnershipService, db *gorm.DB, shipSc service.ShipService) *OwnershipHandler {
+	return &OwnershipHandler{sc, shipSc, db}
 }
 
 func (s *OwnershipHandler) GetAll(c *gin.Context) {
@@ -52,11 +55,36 @@ func (s *OwnershipHandler) Update(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: http.StatusBadRequest, Error: "Некорректные данные в BODY"})
 		return
 	}
-	err := s.sc.UpdateOwnership(req)
+	tx := s.db.Begin()
+	err := s.sc.UpdateOwnership(req, tx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		tx.Rollback()
 		return
 	}
+	ship, err := s.shipSc.GetShipByID(req.ShipID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		tx.Rollback()
+		return
+	}
+	if req.NewOwner != ship.OwnerID {
+		err = s.shipSc.UpdateShip(&entity.Ship{
+			ID:                 ship.ID,
+			TypeID:             ship.TypeID,
+			OwnerID:            req.NewOwner,
+			SkipperID:          ship.SkipperID,
+			ShipNumber:         ship.ShipNumber,
+			RegistrationDate:   ship.RegistrationDate.Add(-3 * time.Hour),
+			RegistrationStatus: ship.RegistrationStatus,
+		}, tx)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+			tx.Rollback()
+			return
+		}
+	}
+	tx.Commit()
 	c.JSON(http.StatusOK, dto.MessageResponse{Message: "Запись успешно обновлена"})
 }
 
@@ -66,12 +94,34 @@ func (s *OwnershipHandler) Create(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, dto.ErrorResponse{Code: http.StatusBadRequest, Error: "Некорректные данные в BODY"})
 		return
 	}
-	err := s.sc.CreateOwnership(req)
+	tx := s.db.Begin()
+	err := s.sc.CreateOwnership(req, tx)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		tx.Rollback()
 		return
 	}
-
+	ship, err := s.shipSc.GetShipByID(req.ShipID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		tx.Rollback()
+		return
+	}
+	err = s.shipSc.UpdateShip(&entity.Ship{
+		ID:                 ship.ID,
+		TypeID:             ship.TypeID,
+		OwnerID:            req.NewOwner,
+		SkipperID:          ship.SkipperID,
+		ShipNumber:         ship.ShipNumber,
+		RegistrationDate:   ship.RegistrationDate.Add(-3 * time.Hour),
+		RegistrationStatus: ship.RegistrationStatus,
+	}, tx)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, dto.ErrorResponse{Code: 500, Error: err.Error()})
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
 	c.JSON(http.StatusCreated, dto.MessageResponse{Message: "Запись успешно добавлена"})
 }
 

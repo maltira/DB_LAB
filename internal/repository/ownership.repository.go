@@ -11,8 +11,8 @@ type ShipOwnershipRepository interface {
 	GetAll() ([]entity.ShipOwnership, error)
 	GetByID(id uuid.UUID) (*entity.ShipOwnership, error)
 
-	Create(s *entity.ShipOwnership) error
-	Update(s *entity.ShipOwnership) error
+	Create(s *entity.ShipOwnership, tx *gorm.DB) error
+	Update(s *entity.ShipOwnership, tx *gorm.DB) error
 	Delete(id uuid.UUID) error
 }
 
@@ -46,12 +46,12 @@ func (r *shipOwnershipRepository) GetByID(id uuid.UUID) (*entity.ShipOwnership, 
 	return s, nil
 }
 
-func (r *shipOwnershipRepository) Update(s *entity.ShipOwnership) error {
-	return r.db.Save(s).Error
+func (r *shipOwnershipRepository) Update(s *entity.ShipOwnership, tx *gorm.DB) error {
+	return tx.Save(s).Error
 }
 
-func (r *shipOwnershipRepository) Create(s *entity.ShipOwnership) error {
-	return r.db.Create(s).Error
+func (r *shipOwnershipRepository) Create(s *entity.ShipOwnership, tx *gorm.DB) error {
+	return tx.Create(s).Error
 }
 
 func (r *shipOwnershipRepository) Delete(id uuid.UUID) error {
