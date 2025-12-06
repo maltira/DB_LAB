@@ -15,6 +15,8 @@ type Config struct {
 	DbHost string
 	DbPort string
 	DbName string
+
+	Secret string
 }
 
 var Env *Config
@@ -33,5 +35,7 @@ func InitEnv() {
 		DbHost: os.Getenv("DB_HOST"),
 		DbPort: os.Getenv("DB_PORT"),
 		DbName: os.Getenv("DB_NAME"),
+
+		Secret: os.Getenv("SECRET"),
 	}
 }

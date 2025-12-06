@@ -24,6 +24,8 @@ func Run() {
 	apiGroup := router.Group("/api")
 
 	// ? Инициализация модулей
+	module.InitAuthModule(apiGroup, db)
+	module.InitUserModule(apiGroup, db)
 	module.InitShipModule(db, apiGroup)
 	module.InitOwnerModule(db, apiGroup)
 	module.InitViolationModule(db, apiGroup)
@@ -34,7 +36,7 @@ func Run() {
 	module.InitQueryModule(db, apiGroup)
 
 	// ? Запуск сервера
-	fmt.Printf("Запуск сервера по адресу: http://%s:%s/api/v1\n", config.Env.AppHost, config.Env.AppPort)
+	fmt.Printf("Запуск сервера по адресу: http://%s:%s/api\n", config.Env.AppHost, config.Env.AppPort)
 	err := router.Run(":" + config.Env.AppPort)
 	if err != nil {
 		panic(fmt.Sprintf("Не удалось запустить сервер: %s", err))

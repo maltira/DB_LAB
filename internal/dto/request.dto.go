@@ -1,6 +1,7 @@
 package dto
 
 import (
+	"DB_LAB/internal/entity"
 	"time"
 
 	"github.com/google/uuid"
@@ -62,4 +63,21 @@ type OwnershipCreateRequest struct {
 	NewOwner     uuid.UUID `json:"new_owner"`
 	TransferDate time.Time `json:"transfer_date"`
 	ShipID       uuid.UUID `json:"ship_id"`
+}
+
+type CreateUserRequest struct {
+	Name     string `json:"name" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	IsAdmin  bool   `json:"is_admin"`
+}
+
+type AuthRequest struct {
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+}
+
+type SuccessfulAuthResponse struct {
+	Token string      `json:"token"`
+	User  entity.User `json:"user"`
 }
